@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manipulação com JavaScript</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Exemplo de Manipulação com JavaScript</h1>
+        <button id="changeColorBtn">Mudar cor de fundo</button>
+        <p id="textElement">Este é um texto que mudará de cor ao clicar no botão.</p>
+    </header>
+
+    <section>
+        <h2>Adicionar Itens à Lista</h2>
+        <input type="text" id="itemInput" placeholder="Digite um item">
+        <button id="addItemBtn">Adicionar Item</button>
+        <ul id="itemList"></ul>
+    </section>
+<br><br>
+
+<h2>Resultado API - GET:</h2>
+<div id="mensagem"></div>
+
+<br><br>
+    <section>
+        <h1>Formulário de Cadastro</h1>
+    <form id="form">
+        <label for="name">Nome:</label>
+<input type="text" id="name" name="name" required><br><br>
+<span id="nameError" style="color: red;"></span> <!-- Mensagem de erro para o campo nome -->
+
+<label for="email">E-mail:</label>
+<input type="email" id="email" name="email" required><br><br>
+<span id="emailError" style="color: red;"></span> <!-- Mensagem de erro para o campo e-mail -->
+
+
+<br><br>
+        
+        <button type="submit">Enviar</button>
+    </form>
+
+    <div id="resultado"></div>
+</section>
+
+<br><br><br>
+<section>
+    <h1>Usuários</h1>
+
+    <button id="showAllBtn">Mostrar Todos</button>
+    <button id="showAbove18Btn">Filtrar Maiores de 18</button>
+
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th>Nome   </th>
+                <th>E-mail   </th>
+                <th>Idade   </th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</section>
+
+<br><br>
+
+<h1>CRUD Simples</h1>
+
+<!-- Adicionar Usuário -->
+<section>
+    <form id="addUserForm">
+        <input type="text" id="nome" placeholder="Nome" required>
+        <input type="email" id="email" placeholder="E-mail" required>
+        <button type="submit">Adicionar</button>
+    </form>
+</section>
+
+<!-- Lista de Usuários -->
+<section>
+    <h2>Lista de Usuários</h2>
+    <ul id="userList"></ul>
+</section>
+
+
+<br><br>
+
+<a href="integracao.html">
+    <button>Ir para a Página 2 - Exercício 10</button>
+</a>
+<br><br>
+
+
+    <footer>
+        <p>&copy; 3SIS 2025 - Cintia Cristina Braga Angelo</p>
+    </footer>
+
+    </body>
+
+
+
+
+    <script>
+        // Manipulação de Elementos - Mudar cor de fundo
+        document.getElementById("changeColorBtn").addEventListener("click", function() {
+    const body = document.body;
+    const textElement = document.getElementById("textElement");
+
+    // Verifica se as cores já foram alteradas
+    if (body.style.backgroundColor === "lightblue") {
+        // Reseta as cores para o estado original
+        body.style.backgroundColor = "";  // Cor de fundo original
+        textElement.style.color = "";  // Cor do texto original
+    } else {
+        // Altera as cores para o novo esquema
+        body.style.backgroundColor = "lightblue";  // Muda a cor de fundo
+        textElement.style.color = "darkred";  // Muda a cor do texto
+    }
+});
+
+
+        // Inserir e Remover Elementos do DOM - Adicionar Item à lista
+        document.getElementById("addItemBtn").addEventListener("click", function() {
+            const input = document.getElementById("itemInput");
+            const itemText = input.value.trim();
+
+            if (itemText !== "") {
+                // Cria um novo <li> e adiciona à lista <ul>
+                const li = document.createElement("li");
+                li.textContent = itemText;
+
+                // Adiciona funcionalidade para remover o item
+                li.addEventListener("click", function() {
+                    li.remove();  // Remove o item da lista ao clicar
+                });
+
+                // Adiciona o novo <li> à lista
+                document.getElementById("itemList").appendChild(li);
+                
+                // Limpa o campo de entrada
+                input.value = "";
+            } else {
+                alert("Por favor, insira um item!");
+            }
+        });
+
+
+//--------------------- 4 ----------------------//
+        function consumirApi() {
+        fetch("http://demo1464921.mockable.io/mensagem")
+        .then(response => response.json())
+        .then(data => exibirDados(data))
+        //tratamento de erros
+        .catch(error => console.log(error))
+    }
+
+    function exibirDados(data){
+    console.log(data); // Verificando o que é retornado pela API
+    document.getElementById("mensagem").textContent = data.mensagem; // Usando textContent para exibir a mensagem no div
+    
+
+}
+
+
+
+
+
+
+//--------------- 5 ---------------//
+
+function init() {
+    const form = document.getElementById('form');
+    form.addEventListener('submit', handleFormSubmit);
+}
+
+
+function handleFormSubmit(event) {
+    event.preventDefault(); 
+
+    if (validarFormulario()) { 
+        const nome = getInputValue('name');
+        const email = getInputValue('email');
+
+        const dados = {
+            nome: nome,
+            email: email
+        };
+
+        enviarDadosParaApi(dados); 
+    }
+}
+
+// Função para obter o valor de um campo de entrada
+function getInputValue(inputId) {
+  const input = document.getElementById(inputId);
+  return input.value;
+}
+
+// Função para enviar os dados para o servidor mockable.io via POST
+function enviarDadosParaApi(dados) {
+    fetch("http://demo1464921.mockable.io/enviar", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dados) // Converte o objeto dados para JSON
+    })
+    .then(response => response.json()) // Converte a resposta para JSON
+    .then(data => exibirResposta(data)) // Exibe a resposta do servidor
+    .catch(error => {
+        console.error('Erro:', error); // Exibe erro, caso ocorra
+    });
+}
+
+// Função para exibir a resposta na tela
+function exibirResposta(data) {
+    const resultadoDiv = document.getElementById('resultado');
+    resultadoDiv.innerHTML = `Resposta: ${data.message}`; // Exibe a resposta na tela
+}
+
+
+// Função para validar os campos do formulário
+function validarFormulario() {
+    let nome = document.getElementById('name').value.trim();
+    let email = document.getElementById('email').value.trim();
+    let valido = true;
+
+    // Limpar mensagens de erro
+    document.getElementById('nameError').textContent = '';
+    document.getElementById('emailError').textContent = '';
+
+    if (nome === '') {
+        document.getElementById('nameError').textContent = 'Por favor, preencha o nome.';
+        valido = false;
+    }
+
+    if (email === '') {
+        document.getElementById('emailError').textContent = 'Por favor, preencha o e-mail.';
+        valido = false;
+    }
+
+    return valido;
+}
+
+
+
+
+// Função para obter o valor de um campo de entrada
+function getInputValue(inputId) {
+    const input = document.getElementById(inputId);
+    return input.value;
+}
+
+
+
+
+//---------6 e 7--------//
+
+
+
+// Função para consumir a API e exibir os dados na tabela
+function listaAPI() {
+    fetch("http://demo1464921.mockable.io/lista")  // Supondo um endpoint que retorne um array de objetos
+        .then(response => response.json())
+        .then(data => {
+            exibirDadosNaTabela(data);
+            window.dataUsuarios = data;  // Armazena os dados para poder filtrá-los depois
+        })
+        .catch(error => console.error('Erro ao consumir API:', error));
+}
+
+// Função para exibir dados na tabela
+function exibirDadosNaTabela(dados) {
+    const tbody = document.querySelector("#userTable tbody");
+    tbody.innerHTML = "";  // Limpa o conteúdo da tabela antes de adicionar novos dados
+
+    dados.forEach(usuario => {
+        const tr = document.createElement("tr");
+        
+        const tdNome = document.createElement("td");
+        tdNome.textContent = usuario.nome;
+        tr.appendChild(tdNome);
+        
+        const tdEmail = document.createElement("td");
+        tdEmail.textContent = usuario.email;
+        tr.appendChild(tdEmail);
+        
+        const tdIdade = document.createElement("td");
+        tdIdade.textContent = usuario.idade;
+        tr.appendChild(tdIdade);
+
+        tbody.appendChild(tr);
+    });
+}
+
+// Filtrar os usuários maiores de 18 anos
+function filtrarMaioresDe18() {
+    const usuariosFiltrados = window.dataUsuarios.filter(usuario => usuario.idade > 18);
+    exibirDadosNaTabela(usuariosFiltrados);
+}
+
+// Resetar o filtro e exibir todos os usuários
+function resetarFiltro() {
+    exibirDadosNaTabela(window.dataUsuarios);
+}
+
+// Adicionar listeners aos botões
+document.getElementById("showAllBtn").addEventListener("click", resetarFiltro);
+document.getElementById("showAbove18Btn").addEventListener("click", filtrarMaioresDe18);
+
+// Carregar dados ao iniciar a página
+
+
+
+
+//----------    8  -------------//
+
+const apiUrl = 'http://demo1464921.mockable.io/usuarios';
+        let usuarios = [];
+
+        // Carregar usuários utilizando GET
+        function carregarUsuarios() {
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    usuarios = data;
+                    exibirUsuarios();
+                })
+                .catch(error => console.error('Erro ao carregar usuários:', error));
+        }
+
+        // Exibir usuários no HTML
+        function exibirUsuarios() {
+            const userList = document.getElementById('userList');
+            userList.innerHTML = '';
+
+            usuarios.forEach((usuario, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    ${usuario.nome} - ${usuario.email}
+                    <button onclick="editarUsuario(${index})">Editar</button>
+                    <button onclick="deletarUsuario(${index})">Deletar</button>
+                `;
+                userList.appendChild(li);
+            });
+        }
+
+        // Adicionar usuário utilizando POST
+        document.getElementById('addUserForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const nome = document.getElementById('nome').value.trim();
+            const email = document.getElementById('email').value.trim();
+
+            const novoUsuario = { nome, email };
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(novoUsuario)
+            })
+            .then(response => {
+                if (response.ok) {
+                    usuarios.push(novoUsuario); // Adicione localmente se request bem sucedida
+                    exibirUsuarios();
+                } else {
+                    console.error('Falha ao adicionar usuário. Status:', response.status);
+                }
+            })
+            .catch(error => console.error('Erro ao adicionar usuário:', error));
+
+            this.reset(); // Reseta o formulário após submissão
+        });
+
+        // Editar usuário (Simulação de PUT)
+        function editarUsuario(index) {
+            const usuario = usuarios[index];
+            const novoNome = prompt("Editar Nome:", usuario.nome);
+            const novoEmail = prompt("Editar E-mail:", usuario.email);
+
+            if (novoNome && novoEmail) {
+                usuarios[index] = { nome: novoNome, email: novoEmail };
+                console.log('Simulando PUT para: ', usuarios[index]);
+                exibirUsuarios();
+            }
+        }
+
+        // Deletar usuário (Simulação de DELETE)
+        function deletarUsuario(index) {
+            const usuario = usuarios[index];
+            console.log('Simulando DELETE para: ', usuario);
+            usuarios.splice(index, 1);
+            exibirUsuarios();
+        }
+
+//-----------------------9
+
+window.addEventListener('load', function() {
+    consumirApi();
+    listaAPI();
+    carregarUsuarios();
+    init();
+});
+
+</script>
+</html>

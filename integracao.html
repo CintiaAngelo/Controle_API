@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Viagens</title>
+    <link rel="stylesheet" href="stylesintegracao.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Cadastro de Viagens</h1>
+
+        <!-- Menu de navegação -->
+        <nav>
+            <ul>
+                <li><a href="#cadastro">Cadastrar Viagem</a></li>
+                <li><a href="#listagem">Lista de Viagens</a></li>
+            </ul>
+        </nav>
+
+        <!-- Cadastro de Viagem -->
+        <section id="cadastro">
+            <h2>Cadastrar Nova Viagem</h2>
+            <form id="viagemForm">
+                <input type="text" id="destinoViagem" placeholder="Destino da Viagem" required>
+                <input type="number" id="tempoViagem" placeholder="Tempo de Viagem (em dias)" required>
+                <input type="number" id="valorViagem" placeholder="Valor da Passagem" required>
+                <button type="submit">Cadastrar</button>
+            </form>
+        </section>
+
+        <!-- Listagem de Viagens -->
+        <section id="listagem">
+            <h2>Lista de Viagens</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Destino</th>
+                        <th>Tempo de Viagem</th>
+                        <th>Valor da Passagem</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-viagens"></tbody>
+            </table>
+        </section>
+        
+    </div>
+
+    <section>
+        <a href="index.html">
+            <button class="back-button">Voltar</button>
+        </a>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
